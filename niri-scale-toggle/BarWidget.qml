@@ -5,7 +5,6 @@ Loader {
     id: root
 
     property var pluginApi: null
-    property ShellScreen screen
     property string widgetId: ""
     property string section: ""
 
