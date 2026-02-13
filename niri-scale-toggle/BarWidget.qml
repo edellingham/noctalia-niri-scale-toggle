@@ -3,8 +3,9 @@ import QtQuick.Controls
 
 import Quickshell
 import qs.Widgets
+import qs.Commons
 
-NIconButton {
+NButton {
     id: root
 
     property var pluginApi: null
@@ -16,9 +17,8 @@ NIconButton {
     property int currentScaleIndex: 0
     property string currentOutput: "eDP-1"
 
-    // Icon and tooltip - using a standard icon name
-    icon: "zoom-original"
-    tooltipText: scalePresets[currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
+    // Display the current scale as button text
+    text: scalePresets[currentScaleIndex].toFixed(2) + "x"
 
     onClicked: {
         console.log("=== Scale button clicked ===")
@@ -61,31 +61,18 @@ NIconButton {
             Repeater {
                 model: root.scalePresets.length
 
-                Button {
+                NButton {
                     width: parent.width
                     height: 36
 
                     text: root.scalePresets[index].toFixed(2) + "x (" +
                           Math.round(root.scalePresets[index] * 100) + "%)"
 
-                    background: Rectangle {
-                        color: root.currentScaleIndex === index ? "#0d47a1" : "transparent"
-                        radius: 4
-                    }
-
-                    contentItem: Text {
-                        text: parent.text
-                        color: root.currentScaleIndex === index ? "#ffffff" : "#e0e0e0"
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        font.pixelSize: 11
-                    }
-
                     onClicked: {
                         console.log("Selected scale:", root.scalePresets[index])
                         applyScale(root.scalePresets[index])
                         root.currentScaleIndex = index
-                        root.tooltipText = root.scalePresets[root.currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
+                        root.text = root.scalePresets[root.currentScaleIndex].toFixed(2) + "x"
                         menu.close()
                     }
                 }
@@ -97,23 +84,10 @@ NIconButton {
                 color: "#464646"
             }
 
-            Button {
+            NButton {
                 width: parent.width
                 height: 36
                 text: "Reload Config"
-
-                background: Rectangle {
-                    color: "transparent"
-                    radius: 4
-                }
-
-                contentItem: Text {
-                    text: parent.text
-                    color: "#e0e0e0"
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    font.pixelSize: 11
-                }
 
                 onClicked: {
                     console.log("Reload config clicked")
@@ -144,6 +118,6 @@ NIconButton {
     }
 
     Component.onCompleted: {
-        console.log("Niri Scale Toggle BarWidget loaded with icon")
+        console.log("Niri Scale Toggle BarWidget loaded")
     }
 }
