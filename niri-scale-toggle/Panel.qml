@@ -23,6 +23,14 @@ Item {
 
     anchors.fill: parent
 
+    Component.onCompleted: {
+        // Load saved scale from settings
+        if (pluginApi?.pluginSettings?.lastScale !== undefined) {
+            currentScaleValue = pluginApi.pluginSettings.lastScale
+            console.log("Restored scale from settings:", currentScaleValue)
+        }
+    }
+
     Process {
         id: scaleProcess
         command: ["/usr/bin/niri", "msg", "output", "eDP-1", "scale", "1.0"]
@@ -108,6 +116,11 @@ Item {
     function applyScale(scale) {
         console.log("Applying scale:", scale, "to output:", currentOutput)
         currentScaleValue = scale
+        // Save to plugin settings for persistence
+        if (pluginApi?.pluginSettings) {
+            pluginApi.pluginSettings.lastScale = scale
+            console.log("Saved scale to settings:", scale)
+        }
         // Update the command with the new scale value
         scaleProcess.command = ["/usr/bin/niri", "msg", "output", currentOutput, "scale", scale.toString()]
         console.log("Executing:", scaleProcess.command)
