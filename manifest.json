@@ -1,10 +1,26 @@
 {
+  "id": "niri-scale-toggle",
   "name": "Niri Scale Toggle",
   "version": "1.0.0",
-  "description": "Quick toggle for screen scale sizes in Niri. Perfect for accessibility and evening viewing comfort.",
-  "author": "Ed",
+  "minNoctaliaVersion": "1.0.0",
+  "author": "edellingham",
   "license": "MIT",
-  "noctalia_version": ">=1.0.0",
-  "main": "main.qml",
-  "settings": "settings.qml"
+  "description": "Quick toggle for screen scale sizes in Niri. Perfect for accessibility and evening viewing comfort.",
+  "repository": "https://github.com/edellingham/noctalia-niri-scale-toggle",
+  "entryPoints": {
+    "barWidget": "main.qml"
+  },
+  "tags": [
+    "Bar",
+    "System",
+    "Scale",
+    "Accessibility",
+    "Niri"
+  ],
+  "metadata": {
+    "defaultSettings": {
+      "scales": [1.0, 1.25, 1.5, 1.75, 2.0],
+      "output": "eDP-1"
+    }
+  }
 }
