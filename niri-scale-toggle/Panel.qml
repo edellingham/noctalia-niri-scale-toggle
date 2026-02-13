@@ -41,6 +41,11 @@ Item {
         command: ["/usr/bin/niri", "msg", "action", "load-config-file"]
     }
 
+    Process {
+        id: syncProcess
+        command: ["/bin/bash", "-c", "niri msg outputs | grep -A 20 'eDP-1' | grep scale | head -1 | grep -o '[0-9.]*' | head -1"]
+    }
+
     Rectangle {
         id: panelContainer
         anchors.fill: parent
@@ -95,14 +100,30 @@ Item {
                 color: Color.mOutline
             }
 
-            NButton {
+            RowLayout {
                 Layout.fillWidth: true
-                height: 32
-                text: "Reload Niri Config"
+                spacing: 4
 
-                onClicked: {
-                    console.log("Reload config clicked")
-                    reloadNiriConfig()
+                NButton {
+                    Layout.fillWidth: true
+                    height: 32
+                    text: "Reload Config"
+
+                    onClicked: {
+                        console.log("Reload config clicked")
+                        reloadNiriConfig()
+                    }
+                }
+
+                NButton {
+                    Layout.fillWidth: true
+                    height: 32
+                    text: "Sync Scale"
+
+                    onClicked: {
+                        console.log("Sync scale clicked")
+                        syncCurrentScale()
+                    }
                 }
             }
 
@@ -131,5 +152,12 @@ Item {
         console.log("Reloading Niri config")
         console.log("Executing reload command")
         reloadProcess.running = true
+    }
+
+    function syncCurrentScale() {
+        console.log("Syncing current scale from Niri")
+        // Run niri msg outputs and extract the scale value for eDP-1
+        syncProcess.running = true
+        console.log("Scale sync initiated - it will be updated in the background")
     }
 }
