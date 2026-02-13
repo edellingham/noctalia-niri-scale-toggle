@@ -16,8 +16,8 @@ NIconButton {
     property int currentScaleIndex: 0
     property string currentOutput: "eDP-1"
 
-    // Icon and tooltip
-    icon: "zoom-fit-width"
+    // Icon and tooltip - using a standard icon name
+    icon: "zoom-original"
     tooltipText: scalePresets[currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
 
     onClicked: {
