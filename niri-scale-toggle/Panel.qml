@@ -15,12 +15,18 @@ Item {
     property string section: ""
 
     // Configuration
-    property var scalePresets: [1.0, 1.25, 1.5, 1.75, 2.0]
+    property var scalePresets: [1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5]
+    property real currentScaleValue: 1.0
     property int currentScaleIndex: 0
     property string currentOutput: "eDP-1"
     property real contentPreferredWidth: 300 * Style.uiScaleRatio
 
     anchors.fill: parent
+
+    Component.onCompleted: {
+        console.log("Panel initialized, querying current scale")
+        queryOutputsProcess.running = true
+    }
 
     Process {
         id: scaleProcess
@@ -32,6 +38,15 @@ Item {
         command: ["/usr/bin/niri", "msg", "action", "load-config-file"]
     }
 
+    Process {
+        id: queryOutputsProcess
+        command: ["/usr/bin/niri", "msg", "outputs"]
+        onFinished: {
+            console.log("Query outputs finished")
+            updateCurrentScale()
+        }
+    }
+
     Rectangle {
         id: panelContainer
         anchors.fill: parent
@@ -40,9 +55,9 @@ Item {
         ColumnLayout {
             anchors {
                 fill: parent
-                margins: 16
+                margins: 8
             }
-            spacing: 8
+            spacing: 4
 
             Text {
                 text: "Display Scale"
@@ -52,7 +67,7 @@ Item {
             }
 
             Text {
-                text: "Current scale: " + root.scalePresets[root.currentScaleIndex].toFixed(2) + "x"
+                text: "Current scale: " + root.currentScaleValue.toFixed(2) + "x"
                 color: Color.mOnSurfaceVariant
                 font.pixelSize: 12
             }
@@ -66,7 +81,7 @@ Item {
 
                     NButton {
                         Layout.fillWidth: true
-                        height: 40
+                        height: 32
 
                         text: root.scalePresets[index].toFixed(2) + "x (" +
                               Math.round(root.scalePresets[index] * 100) + "%)"
@@ -88,7 +103,7 @@ Item {
 
             NButton {
                 Layout.fillWidth: true
-                height: 40
+                height: 32
                 text: "Reload Niri Config"
 
                 onClicked: {
@@ -106,6 +121,7 @@ Item {
     // Functions
     function applyScale(scale) {
         console.log("Applying scale:", scale, "to output:", currentOutput)
+        currentScaleValue = scale
         // Update the command with the new scale value
         scaleProcess.command = ["/usr/bin/niri", "msg", "output", currentOutput, "scale", scale.toString()]
         console.log("Executing:", scaleProcess.command)
@@ -116,5 +132,11 @@ Item {
         console.log("Reloading Niri config")
         console.log("Executing reload command")
         reloadProcess.running = true
+    }
+
+    function updateCurrentScale() {
+        // For now, just set to a reasonable default
+        // In a full implementation, we'd parse the niri msg outputs command
+        console.log("Updated current scale")
     }
 }
