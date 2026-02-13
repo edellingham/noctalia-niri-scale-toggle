@@ -23,11 +23,6 @@ Item {
 
     anchors.fill: parent
 
-    Component.onCompleted: {
-        console.log("Panel initialized, querying current scale")
-        queryOutputsProcess.running = true
-    }
-
     Process {
         id: scaleProcess
         command: ["/usr/bin/niri", "msg", "output", "eDP-1", "scale", "1.0"]
@@ -36,15 +31,6 @@ Item {
     Process {
         id: reloadProcess
         command: ["/usr/bin/niri", "msg", "action", "load-config-file"]
-    }
-
-    Process {
-        id: queryOutputsProcess
-        command: ["/usr/bin/niri", "msg", "outputs"]
-        onFinished: {
-            console.log("Query outputs finished")
-            updateCurrentScale()
-        }
     }
 
     Rectangle {
@@ -132,11 +118,5 @@ Item {
         console.log("Reloading Niri config")
         console.log("Executing reload command")
         reloadProcess.running = true
-    }
-
-    function updateCurrentScale() {
-        // For now, just set to a reasonable default
-        // In a full implementation, we'd parse the niri msg outputs command
-        console.log("Updated current scale")
     }
 }
