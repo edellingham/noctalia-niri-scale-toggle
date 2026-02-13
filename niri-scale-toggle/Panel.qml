@@ -22,8 +22,13 @@ Item {
     anchors.fill: parent
 
     Process {
-        id: shellProcess
-        command: ["/bin/sh", "-c", ""]
+        id: scaleProcess
+        command: ["niri-msg", "output", "eDP-1", "scale", "1.0"]
+    }
+
+    Process {
+        id: reloadProcess
+        command: ["niri-msg", "action", "reload-config"]
     }
 
     Rectangle {
@@ -100,21 +105,15 @@ Item {
     // Functions
     function applyScale(scale) {
         console.log("Applying scale:", scale, "to output:", currentOutput)
-        let cmd = "niri-msg output %1 scale %2".arg(currentOutput).arg(scale)
-        executeCommand(cmd, "Scale changed to " + scale + "x")
+        // Update the command with the new scale value
+        scaleProcess.command = ["niri-msg", "output", currentOutput, "scale", scale.toString()]
+        console.log("Executing:", scaleProcess.command)
+        scaleProcess.running = true
     }
 
     function reloadNiriConfig() {
         console.log("Reloading Niri config")
-        executeCommand("niri-msg action reload-config", "Config reloaded")
-    }
-
-    function executeCommand(cmd, successMessage) {
-        console.log("Execute command:", cmd)
-        shellProcess.command = ["/bin/sh", "-c", cmd]
-        shellProcess.running = true
-        if (successMessage) {
-            console.log("Success:", successMessage)
-        }
+        console.log("Executing reload command")
+        reloadProcess.running = true
     }
 }
