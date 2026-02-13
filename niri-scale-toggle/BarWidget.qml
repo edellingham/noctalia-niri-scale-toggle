@@ -9,39 +9,38 @@ import qs.Widgets
 import qs.Services.UI
 import qs.Services.System
 
-Item {
+NButton {
     id: root
 
-    width: barButton.width + 16
-    height: parent.height
+    property var pluginApi: null
+    property ShellScreen screen
+    property string widgetId: ""
+    property string section: ""
 
     // Configuration
     property var scalePresets: [1.0, 1.25, 1.5, 1.75, 2.0]
     property int currentScaleIndex: 0
-    property string currentOutput: "eDP-1"  // Default, can be customized in settings
+    property string currentOutput: "eDP-1"
     property string niriConfigPath: StandardPaths.home + "/.config/niri/config.kdl"
 
-    // Current scale display
-    Text {
-        id: barButton
-        anchors.centerIn: parent
-        text: scalePresets[currentScaleIndex].toFixed(2) + "x"
-        color: palette.text
-        font.pixelSize: 12
-        font.weight: Font.Medium
+    // Display the current scale
+    text: scalePresets[currentScaleIndex].toFixed(2) + "x"
 
-        MouseArea {
-            anchors.fill: parent
-            hoverEnabled: true
+    baseSize: Style.capsuleHeight
+    applyUiScale: false
+    customRadius: Style.radiusL
+    colorBg: Style.capsuleColor
+    colorFg: Color.mOnSurface
+    colorBgHover: Color.mHover
+    colorFgHover: Color.mOnHover
+    colorBorder: "transparent"
+    colorBorderHover: "transparent"
 
-            onClicked: menu.toggle()
-            onEntered: parent.opacity = 0.8
-            onExited: parent.opacity = 1.0
-        }
-    }
+    border.color: Style.capsuleBorderColor
+    border.width: Style.capsuleBorderWidth
 
-    Behavior on opacity {
-        NumberAnimation { duration: 150 }
+    onClicked: {
+        menu.open()
     }
 
     // Popup menu with scale options
@@ -49,11 +48,11 @@ Item {
         id: menu
         x: parent.x - width + parent.width
         y: parent.height + 4
-        width: 120
+        width: 140
         padding: 8
         background: Rectangle {
-            color: palette.base
-            border.color: palette.mid
+            color: Color.mSurface
+            border.color: Color.mOutline
             border.width: 1
             radius: 8
         }
@@ -65,27 +64,17 @@ Item {
             Repeater {
                 model: root.scalePresets.length
 
-                Button {
+                NButton {
                     width: parent.width
-                    height: 32
+                    height: 36
 
-                    background: Rectangle {
-                        color: currentScaleIndex === index
-                            ? palette.highlight
-                            : "transparent"
-                        radius: 4
-                    }
+                    text: root.scalePresets[index].toFixed(2) + "x (" +
+                          Math.round(root.scalePresets[index] * 100) + "%)"
 
-                    contentItem: Text {
-                        text: root.scalePresets[index].toFixed(2) + "x (" +
-                              Math.round(root.scalePresets[index] * 100) + "%)"
-                        color: currentScaleIndex === index
-                            ? palette.highlightedText
-                            : palette.text
-                        font.pixelSize: 11
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
+                    colorBg: currentScaleIndex === index ? Color.mPrimary : "transparent"
+                    colorFg: currentScaleIndex === index ? Color.mOnPrimary : Color.mOnSurface
+                    colorBgHover: currentScaleIndex === index ? Color.mPrimaryContainer : Color.mSurfaceVariant
+                    colorFgHover: currentScaleIndex === index ? Color.mOnPrimary : Color.mOnSurface
 
                     onClicked: {
                         applyScale(root.scalePresets[index])
@@ -98,25 +87,18 @@ Item {
             Rectangle {
                 width: parent.width
                 height: 1
-                color: palette.mid
+                color: Color.mOutline
             }
 
-            Button {
+            NButton {
                 width: parent.width
-                height: 32
+                height: 36
+                text: "Reload Config"
 
-                background: Rectangle {
-                    color: "transparent"
-                    radius: 4
-                }
-
-                contentItem: Text {
-                    text: "Reload Config"
-                    color: palette.text
-                    font.pixelSize: 10
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
+                colorBg: "transparent"
+                colorFg: Color.mOnSurface
+                colorBgHover: Color.mSurfaceVariant
+                colorFgHover: Color.mOnSurface
 
                 onClicked: {
                     reloadNiriConfig()
@@ -128,18 +110,15 @@ Item {
 
     // Function to apply scale change
     function applyScale(scale) {
+        console.log("Applying scale:", scale, "to output:", currentOutput)
         // Try using niri-msg first (if available)
-        if (executeCommand("which niri-msg", "")) {
-            let cmd = "niri-msg output %1 scale %2".arg(currentOutput).arg(scale)
-            executeCommand(cmd, "Scale changed to " + scale + "x")
-        } else {
-            // Fallback: modify config and notify user
-            notifyUser("Use niri-msg or manually set scale to " + scale + "x in your Niri config")
-        }
+        let cmd = "niri-msg output %1 scale %2".arg(currentOutput).arg(scale)
+        executeCommand(cmd, "Scale changed to " + scale + "x")
     }
 
     // Function to reload Niri configuration
     function reloadNiriConfig() {
+        console.log("Reloading Niri config")
         executeCommand("niri-msg action reload-config", "Config reloaded")
     }
 
