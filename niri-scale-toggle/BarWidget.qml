@@ -18,7 +18,7 @@ NIconButton {
 
     // Icon and tooltip
     icon: "zoom-fit-width"
-    tooltip: scalePresets[currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
+    tooltipText: scalePresets[currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
 
     onClicked: {
         console.log("Scale button clicked, opening menu")
@@ -73,7 +73,7 @@ NIconButton {
                         console.log("Selected scale:", root.scalePresets[index])
                         applyScale(root.scalePresets[index])
                         root.currentScaleIndex = index
-                        root.tooltip = root.scalePresets[root.currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
+                        root.tooltipText = root.scalePresets[root.currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
                         menu.close()
                     }
                 }
