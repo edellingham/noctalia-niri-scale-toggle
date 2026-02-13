@@ -21,19 +21,31 @@ NIconButton {
     tooltipText: scalePresets[currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
 
     onClicked: {
-        console.log("Scale button clicked, opening menu")
+        console.log("=== Scale button clicked ===")
+        console.log("Menu object exists:", menu !== undefined)
+        console.log("Attempting to open menu...")
         menu.open()
+        console.log("Menu open called")
     }
 
     // Popup menu with scale options
     Popup {
         id: menu
-        x: parent.x - width + parent.width
+        x: 0
         y: parent.height + 4
         width: 140
         padding: 8
         modal: false
         focus: false
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+
+        onOpened: {
+            console.log("=== Menu opened successfully ===")
+        }
+
+        onClosed: {
+            console.log("=== Menu closed ===")
+        }
 
         background: Rectangle {
             color: "#2b2b2b"
