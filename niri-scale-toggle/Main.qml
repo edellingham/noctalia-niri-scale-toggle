@@ -1,6 +1,6 @@
 import QtQuick
 
-import Noctalia.Shell
+import Quickshell
 
 // Main plugin loader - delegates to appropriate components
 Item {

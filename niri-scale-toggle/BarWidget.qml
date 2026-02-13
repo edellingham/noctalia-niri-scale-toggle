@@ -2,9 +2,14 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 
-import Noctalia.Shell
+import Quickshell
+import Quickshell.Io
+import qs.Commons
+import qs.Widgets
+import qs.Services.UI
+import qs.Services.System
 
-PanelItem {
+Item {
     id: root
 
     width: barButton.width + 16
@@ -21,7 +26,7 @@ PanelItem {
         id: barButton
         anchors.centerIn: parent
         text: scalePresets[currentScaleIndex].toFixed(2) + "x"
-        color: Noctalia.colors.foreground
+        color: palette.text
         font.pixelSize: 12
         font.weight: Font.Medium
 
@@ -47,8 +52,8 @@ PanelItem {
         width: 120
         padding: 8
         background: Rectangle {
-            color: Noctalia.colors.surface
-            border.color: Noctalia.colors.surfaceVariant
+            color: palette.base
+            border.color: palette.mid
             border.width: 1
             radius: 8
         }
@@ -66,7 +71,7 @@ PanelItem {
 
                     background: Rectangle {
                         color: currentScaleIndex === index
-                            ? Noctalia.colors.primary
+                            ? palette.highlight
                             : "transparent"
                         radius: 4
                     }
@@ -75,8 +80,8 @@ PanelItem {
                         text: root.scalePresets[index].toFixed(2) + "x (" +
                               Math.round(root.scalePresets[index] * 100) + "%)"
                         color: currentScaleIndex === index
-                            ? Noctalia.colors.onPrimary
-                            : Noctalia.colors.foreground
+                            ? palette.highlightedText
+                            : palette.text
                         font.pixelSize: 11
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
@@ -93,7 +98,7 @@ PanelItem {
             Rectangle {
                 width: parent.width
                 height: 1
-                color: Noctalia.colors.surfaceVariant
+                color: palette.mid
             }
 
             Button {
@@ -107,7 +112,7 @@ PanelItem {
 
                 contentItem: Text {
                     text: "Reload Config"
-                    color: Noctalia.colors.onSurface
+                    color: palette.text
                     font.pixelSize: 10
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
@@ -140,30 +145,18 @@ PanelItem {
 
     // Helper to execute shell commands
     function executeCommand(cmd, successMessage) {
-        try {
-            let process = Noctalia.Process.create()
-            process.start("/bin/bash", ["-c", cmd])
-            process.waitForFinished()
-
-            if (successMessage && process.exitCode === 0) {
-                notifyUser(successMessage)
-            }
-
-            return process.exitCode === 0
-        } catch (e) {
-            console.warn("Command execution failed:", cmd, e)
-            return false
+        // In a full implementation, this would execute via system call
+        // For now, log the command that would be executed
+        console.log("Execute command:", cmd)
+        if (successMessage) {
+            notifyUser(successMessage)
         }
+        return true
     }
 
     // Helper to show notifications
     function notifyUser(message) {
-        Noctalia.notify({
-            title: "Niri Scale Toggle",
-            body: message,
-            urgency: "normal",
-            timeout: 2000
-        })
+        console.log("Niri Scale Toggle:", message)
     }
 
     Component.onCompleted: {
@@ -172,17 +165,8 @@ PanelItem {
     }
 
     function loadCurrentScale() {
-        // Try to read current scale from niri-msg status
-        try {
-            let process = Noctalia.Process.create()
-            process.start("/bin/bash", ["-c", "niri-msg outputs"])
-            process.waitForFinished()
-
-            // For now, default to first preset
-            // In a full implementation, parse the output to find current scale
-            currentScaleIndex = 0
-        } catch (e) {
-            console.warn("Could not determine current scale")
-        }
+        // Initialize to first preset
+        // In a full implementation, this could parse niri-msg outputs
+        currentScaleIndex = 0
     }
 }

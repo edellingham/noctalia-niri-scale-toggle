@@ -2,7 +2,10 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 
-import Noctalia.Shell
+import Quickshell
+import qs.Commons
+import qs.Widgets
+import qs.Services.UI
 
 Item {
     implicitHeight: settingsColumn.implicitHeight + 32
@@ -23,7 +26,7 @@ Item {
 
                 Text {
                     text: "Configure which scale values appear in the quick toggle menu."
-                    color: Noctalia.colors.onSurface
+                    color: palette.text
                     font.pixelSize: 11
                     wrapMode: Text.WordWrap
                 }
@@ -33,7 +36,7 @@ Item {
 
                     Text {
                         text: "Scale 1:"
-                        color: Noctalia.colors.onSurfaceVariant
+                        color: palette.mid
                         font.pixelSize: 10
                     }
 
@@ -59,7 +62,7 @@ Item {
 
                     Text {
                         text: "Scale 2:"
-                        color: Noctalia.colors.onSurfaceVariant
+                        color: palette.mid
                         font.pixelSize: 10
                     }
 
@@ -85,7 +88,7 @@ Item {
 
                     Text {
                         text: "Scale 3:"
-                        color: Noctalia.colors.onSurfaceVariant
+                        color: palette.mid
                         font.pixelSize: 10
                     }
 
@@ -111,7 +114,7 @@ Item {
 
                     Text {
                         text: "Scale 4:"
-                        color: Noctalia.colors.onSurfaceVariant
+                        color: palette.mid
                         font.pixelSize: 10
                     }
 
@@ -137,7 +140,7 @@ Item {
 
                     Text {
                         text: "Scale 5:"
-                        color: Noctalia.colors.onSurfaceVariant
+                        color: palette.mid
                         font.pixelSize: 10
                     }
 
@@ -173,7 +176,7 @@ Item {
 
                     Text {
                         text: "Primary Output:"
-                        color: Noctalia.colors.onSurfaceVariant
+                        color: palette.mid
                         font.pixelSize: 10
                     }
 
@@ -188,7 +191,7 @@ Item {
 
                 Text {
                     text: "Select the monitor output to control. Run 'niri-msg outputs' to see available outputs."
-                    color: Noctalia.colors.onSurfaceVariant
+                    color: palette.mid
                     font.pixelSize: 9
                     wrapMode: Text.WordWrap
                 }
