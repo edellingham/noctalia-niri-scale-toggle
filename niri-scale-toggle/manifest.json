@@ -1,7 +1,7 @@
 {
   "id": "niri-scale-toggle",
   "name": "Niri Scale Toggle",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "minNoctaliaVersion": "1.0.0",
   "author": "edellingham",
   "license": "MIT",

@@ -4,7 +4,7 @@
     {
       "id": "niri-scale-toggle",
       "name": "Niri Scale Toggle",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "official": false,
       "author": "edellingham",
       "description": "Quick toggle for screen scale sizes in Niri. Perfect for accessibility and evening viewing comfort.",
