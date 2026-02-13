@@ -18,17 +18,18 @@ Item {
     property var scalePresets: [1.0, 1.25, 1.5, 1.75, 2.0]
     property int currentScaleIndex: 0
     property string currentOutput: "eDP-1"
+    property real contentPreferredWidth: 300 * Style.uiScaleRatio
 
     anchors.fill: parent
 
     Process {
         id: scaleProcess
-        command: ["niri-msg", "output", "eDP-1", "scale", "1.0"]
+        command: ["/usr/bin/niri", "msg", "output", "eDP-1", "scale", "1.0"]
     }
 
     Process {
         id: reloadProcess
-        command: ["niri-msg", "action", "reload-config"]
+        command: ["/usr/bin/niri", "msg", "action", "load-config-file"]
     }
 
     Rectangle {
@@ -106,7 +107,7 @@ Item {
     function applyScale(scale) {
         console.log("Applying scale:", scale, "to output:", currentOutput)
         // Update the command with the new scale value
-        scaleProcess.command = ["niri-msg", "output", currentOutput, "scale", scale.toString()]
+        scaleProcess.command = ["/usr/bin/niri", "msg", "output", currentOutput, "scale", scale.toString()]
         console.log("Executing:", scaleProcess.command)
         scaleProcess.running = true
     }
