@@ -8,7 +8,7 @@ import qs.Commons
 import qs.Widgets
 import qs.Services.UI
 
-ColumnLayout {
+Item {
     id: root
 
     property var pluginApi: null
@@ -19,68 +19,82 @@ ColumnLayout {
     property int currentScaleIndex: 0
     property string currentOutput: "eDP-1"
 
-    spacing: 8
-    padding: 16
+    anchors.fill: parent
 
     Process {
         id: shellProcess
         command: ["/bin/sh", "-c", ""]
     }
 
-    Text {
-        text: "Display Scale"
-        color: Color.mOnSurface
-        font.pixelSize: 14
-        font.weight: Font.Bold
-    }
+    Rectangle {
+        id: panelContainer
+        anchors.fill: parent
+        color: "transparent"
 
-    Text {
-        text: "Current scale: " + root.scalePresets[root.currentScaleIndex].toFixed(2) + "x"
-        color: Color.mOnSurfaceVariant
-        font.pixelSize: 12
-    }
+        ColumnLayout {
+            anchors {
+                fill: parent
+                margins: 16
+            }
+            spacing: 8
 
-    ColumnLayout {
-        spacing: 4
+            Text {
+                text: "Display Scale"
+                color: Color.mOnSurface
+                font.pixelSize: 14
+                font.weight: Font.Bold
+            }
 
-        Repeater {
-            model: root.scalePresets.length
+            Text {
+                text: "Current scale: " + root.scalePresets[root.currentScaleIndex].toFixed(2) + "x"
+                color: Color.mOnSurfaceVariant
+                font.pixelSize: 12
+            }
+
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 4
+
+                Repeater {
+                    model: root.scalePresets.length
+
+                    NButton {
+                        Layout.fillWidth: true
+                        height: 40
+
+                        text: root.scalePresets[index].toFixed(2) + "x (" +
+                              Math.round(root.scalePresets[index] * 100) + "%)"
+
+                        onClicked: {
+                            console.log("Selected scale:", root.scalePresets[index])
+                            applyScale(root.scalePresets[index])
+                            root.currentScaleIndex = index
+                        }
+                    }
+                }
+            }
+
+            Rectangle {
+                Layout.fillWidth: true
+                height: 1
+                color: Color.mOutline
+            }
 
             NButton {
                 Layout.fillWidth: true
                 height: 40
-
-                text: root.scalePresets[index].toFixed(2) + "x (" +
-                      Math.round(root.scalePresets[index] * 100) + "%)"
+                text: "Reload Niri Config"
 
                 onClicked: {
-                    console.log("Selected scale:", root.scalePresets[index])
-                    applyScale(root.scalePresets[index])
-                    root.currentScaleIndex = index
+                    console.log("Reload config clicked")
+                    reloadNiriConfig()
                 }
             }
+
+            Item {
+                Layout.fillHeight: true
+            }
         }
-    }
-
-    Rectangle {
-        Layout.fillWidth: true
-        height: 1
-        color: Color.mOutline
-    }
-
-    NButton {
-        Layout.fillWidth: true
-        height: 40
-        text: "Reload Niri Config"
-
-        onClicked: {
-            console.log("Reload config clicked")
-            reloadNiriConfig()
-        }
-    }
-
-    Item {
-        Layout.fillHeight: true
     }
 
     // Functions
