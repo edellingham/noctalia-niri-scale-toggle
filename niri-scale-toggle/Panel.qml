@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
-import Qt.labs.platform
 
 import Quickshell
+import Quickshell.Io
 import qs.Commons
 import qs.Widgets
 import qs.Services.UI
@@ -24,7 +24,7 @@ ColumnLayout {
 
     Process {
         id: shellProcess
-        program: "/bin/sh"
+        command: ["/bin/sh", "-c", ""]
     }
 
     Text {
@@ -97,8 +97,8 @@ ColumnLayout {
 
     function executeCommand(cmd, successMessage) {
         console.log("Execute command:", cmd)
-        shellProcess.arguments = ["-c", cmd]
-        shellProcess.start()
+        shellProcess.command = ["/bin/sh", "-c", cmd]
+        shellProcess.running = true
         if (successMessage) {
             console.log("Success:", successMessage)
         }
