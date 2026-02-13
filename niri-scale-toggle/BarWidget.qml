@@ -33,11 +33,6 @@ NButton {
     colorFg: Color.mOnSurface
     colorBgHover: Color.mHover
     colorFgHover: Color.mOnHover
-    colorBorder: "transparent"
-    colorBorderHover: "transparent"
-
-    border.color: Style.capsuleBorderColor
-    border.width: Style.capsuleBorderWidth
 
     onClicked: {
         menu.open()
