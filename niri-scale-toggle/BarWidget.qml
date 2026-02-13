@@ -1,15 +1,10 @@
 import QtQuick
-import QtQuick.Layouts
 import QtQuick.Controls
 
 import Quickshell
-import Quickshell.Io
-import qs.Commons
-import qs.Widgets
 import qs.Services.UI
-import qs.Services.System
 
-NButton {
+Rectangle {
     id: root
 
     property var pluginApi: null
@@ -21,20 +16,23 @@ NButton {
     property var scalePresets: [1.0, 1.25, 1.5, 1.75, 2.0]
     property int currentScaleIndex: 0
     property string currentOutput: "eDP-1"
-    property string niriConfigPath: StandardPaths.home + "/.config/niri/config.kdl"
+
+    width: scaleText.implicitWidth + 16
+    height: 32
+    color: "transparent"
 
     // Display the current scale
-    text: scalePresets[currentScaleIndex].toFixed(2) + "x"
+    Text {
+        id: scaleText
+        anchors.centerIn: parent
+        text: root.scalePresets[root.currentScaleIndex].toFixed(2) + "x"
+        font.pixelSize: 12
+        font.weight: Font.Medium
+    }
 
-    baseSize: Style.capsuleHeight
-    applyUiScale: false
-    customRadius: Style.radiusL
-    colorBg: Style.capsuleColor
-    colorFg: Color.mOnSurface
-    colorBgHover: Color.mHover
-
-    onClicked: {
-        menu.open()
+    MouseArea {
+        anchors.fill: parent
+        onClicked: menu.open()
     }
 
     // Popup menu with scale options
@@ -45,8 +43,8 @@ NButton {
         width: 140
         padding: 8
         background: Rectangle {
-            color: Color.mSurface
-            border.color: Color.mOutline
+            color: "#2b2b2b"
+            border.color: "#464646"
             border.width: 1
             radius: 8
         }
@@ -58,20 +56,28 @@ NButton {
             Repeater {
                 model: root.scalePresets.length
 
-                NButton {
+                Button {
                     width: parent.width
                     height: 36
 
                     text: root.scalePresets[index].toFixed(2) + "x (" +
                           Math.round(root.scalePresets[index] * 100) + "%)"
 
-                    colorBg: currentScaleIndex === index ? Color.mPrimary : "transparent"
-                    colorFg: currentScaleIndex === index ? Color.mOnPrimary : Color.mOnSurface
-                    colorBgHover: currentScaleIndex === index ? Color.mPrimaryContainer : Color.mSurfaceVariant
+                    background: Rectangle {
+                        color: root.currentScaleIndex === index ? "#0d47a1" : "transparent"
+                        radius: 4
+                    }
+
+                    contentItem: Text {
+                        text: parent.text
+                        color: root.currentScaleIndex === index ? "#ffffff" : "#e0e0e0"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
 
                     onClicked: {
                         applyScale(root.scalePresets[index])
-                        currentScaleIndex = index
+                        root.currentScaleIndex = index
                         menu.close()
                     }
                 }
@@ -80,17 +86,25 @@ NButton {
             Rectangle {
                 width: parent.width
                 height: 1
-                color: Color.mOutline
+                color: "#464646"
             }
 
-            NButton {
+            Button {
                 width: parent.width
                 height: 36
                 text: "Reload Config"
 
-                colorBg: "transparent"
-                colorFg: Color.mOnSurface
-                colorBgHover: Color.mSurfaceVariant
+                background: Rectangle {
+                    color: "transparent"
+                    radius: 4
+                }
+
+                contentItem: Text {
+                    text: parent.text
+                    color: "#e0e0e0"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
 
                 onClicked: {
                     reloadNiriConfig()
@@ -103,7 +117,6 @@ NButton {
     // Function to apply scale change
     function applyScale(scale) {
         console.log("Applying scale:", scale, "to output:", currentOutput)
-        // Try using niri-msg first (if available)
         let cmd = "niri-msg output %1 scale %2".arg(currentOutput).arg(scale)
         executeCommand(cmd, "Scale changed to " + scale + "x")
     }
@@ -116,8 +129,6 @@ NButton {
 
     // Helper to execute shell commands
     function executeCommand(cmd, successMessage) {
-        // In a full implementation, this would execute via system call
-        // For now, log the command that would be executed
         console.log("Execute command:", cmd)
         if (successMessage) {
             notifyUser(successMessage)
@@ -131,13 +142,10 @@ NButton {
     }
 
     Component.onCompleted: {
-        // Initialize current scale from config if possible
         loadCurrentScale()
     }
 
     function loadCurrentScale() {
-        // Initialize to first preset
-        // In a full implementation, this could parse niri-msg outputs
         currentScaleIndex = 0
     }
 }
