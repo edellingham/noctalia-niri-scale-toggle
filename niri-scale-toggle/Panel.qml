@@ -24,10 +24,15 @@ Item {
     anchors.fill: parent
 
     Component.onCompleted: {
+        console.log("Panel.qml loaded")
+        console.log("pluginApi:", pluginApi)
+        console.log("pluginSettings:", pluginApi?.pluginSettings)
         // Load saved scale from settings
         if (pluginApi?.pluginSettings?.lastScale !== undefined) {
             currentScaleValue = pluginApi.pluginSettings.lastScale
             console.log("Restored scale from settings:", currentScaleValue)
+        } else {
+            console.log("No saved scale found in settings")
         }
     }
 
@@ -110,8 +115,9 @@ Item {
                     text: "Reload Config"
 
                     onClicked: {
-                        console.log("Reload config clicked")
+                        console.log(">>> RELOAD CONFIG BUTTON CLICKED")
                         reloadNiriConfig()
+                        console.log(">>> Reload function returned")
                     }
                 }
 
@@ -135,29 +141,41 @@ Item {
 
     // Functions
     function applyScale(scale) {
-        console.log("Applying scale:", scale, "to output:", currentOutput)
+        console.log(">>> applyScale() called with scale:", scale)
+        console.log(">>> Setting currentScaleValue to:", scale)
         currentScaleValue = scale
+        console.log(">>> currentScaleValue is now:", currentScaleValue)
+
         // Save to plugin settings for persistence
+        console.log(">>> Checking pluginApi:", pluginApi)
+        console.log(">>> Checking pluginSettings:", pluginApi?.pluginSettings)
         if (pluginApi?.pluginSettings) {
+            console.log(">>> Saving scale to pluginSettings")
             pluginApi.pluginSettings.lastScale = scale
-            console.log("Saved scale to settings:", scale)
+            console.log(">>> Saved! pluginSettings.lastScale =", pluginApi.pluginSettings.lastScale)
+        } else {
+            console.log(">>> pluginSettings not available!")
         }
+
         // Update the command with the new scale value
+        console.log(">>> Setting scaleProcess command")
         scaleProcess.command = ["/usr/bin/niri", "msg", "output", currentOutput, "scale", scale.toString()]
-        console.log("Executing:", scaleProcess.command)
+        console.log(">>> Command:", scaleProcess.command)
         scaleProcess.running = true
+        console.log(">>> scaleProcess.running set to true")
     }
 
     function reloadNiriConfig() {
-        console.log("Reloading Niri config")
-        console.log("Executing reload command")
+        console.log(">>> reloadNiriConfig() called")
+        console.log(">>> About to set reloadProcess.running = true")
         reloadProcess.running = true
+        console.log(">>> reloadProcess.running set to true")
     }
 
     function syncCurrentScale() {
-        console.log("Syncing current scale from Niri")
-        // Run niri msg outputs and extract the scale value for eDP-1
+        console.log(">>> syncCurrentScale() called")
+        console.log(">>> About to set syncProcess.running = true")
         syncProcess.running = true
-        console.log("Scale sync initiated - it will be updated in the background")
+        console.log(">>> syncProcess.running set to true")
     }
 }
