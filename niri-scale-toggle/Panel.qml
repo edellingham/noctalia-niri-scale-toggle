@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import QtQuick.Controls
 
 import Quickshell
+import Quickshell.Services
 import qs.Commons
 import qs.Widgets
 import qs.Services.UI
@@ -91,6 +92,7 @@ ColumnLayout {
 
     function executeCommand(cmd, successMessage) {
         console.log("Execute command:", cmd)
+        Quickshell.Process.exec(cmd)
         if (successMessage) {
             console.log("Success:", successMessage)
         }
