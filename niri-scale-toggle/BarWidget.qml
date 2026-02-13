@@ -32,7 +32,6 @@ NButton {
     colorBg: Style.capsuleColor
     colorFg: Color.mOnSurface
     colorBgHover: Color.mHover
-    colorFgHover: Color.mOnHover
 
     onClicked: {
         menu.open()
@@ -69,7 +68,6 @@ NButton {
                     colorBg: currentScaleIndex === index ? Color.mPrimary : "transparent"
                     colorFg: currentScaleIndex === index ? Color.mOnPrimary : Color.mOnSurface
                     colorBgHover: currentScaleIndex === index ? Color.mPrimaryContainer : Color.mSurfaceVariant
-                    colorFgHover: currentScaleIndex === index ? Color.mOnPrimary : Color.mOnSurface
 
                     onClicked: {
                         applyScale(root.scalePresets[index])
@@ -93,7 +91,6 @@ NButton {
                 colorBg: "transparent"
                 colorFg: Color.mOnSurface
                 colorBgHover: Color.mSurfaceVariant
-                colorFgHover: Color.mOnSurface
 
                 onClicked: {
                     reloadNiriConfig()
