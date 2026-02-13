@@ -8,7 +8,12 @@
   "description": "Quick toggle for screen scale sizes in Niri. Perfect for accessibility and evening viewing comfort.",
   "repository": "https://github.com/edellingham/noctalia-niri-scale-toggle",
   "entryPoints": {
-    "barWidget": "main.qml"
+    "main": "Main.qml",
+    "barWidget": "BarWidget.qml",
+    "settings": "Settings.qml"
+  },
+  "dependencies": {
+    "plugins": []
   },
   "tags": [
     "Bar",
