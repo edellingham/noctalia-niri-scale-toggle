@@ -1,0 +1,10 @@
+{
+  "name": "Niri Scale Toggle",
+  "version": "1.0.0",
+  "description": "Quick toggle for screen scale sizes in Niri. Perfect for accessibility and evening viewing comfort.",
+  "author": "Ed",
+  "license": "MIT",
+  "noctalia_version": ">=1.0.0",
+  "main": "main.qml",
+  "settings": "settings.qml"
+}
