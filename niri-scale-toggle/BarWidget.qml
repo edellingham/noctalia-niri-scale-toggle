@@ -1,7 +1,10 @@
 import QtQuick
 import QtQuick.Controls
 
-Loader {
+import Quickshell
+import qs.Widgets
+
+NIconButton {
     id: root
 
     property var pluginApi: null
@@ -13,124 +16,97 @@ Loader {
     property int currentScaleIndex: 0
     property string currentOutput: "eDP-1"
 
-    sourceComponent: Item {
-        width: scaleButton.width + 16
-        height: 32
+    // Icon and tooltip
+    icon: "zoom-fit-width"
+    tooltip: scalePresets[currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
 
-        Rectangle {
-            anchors.fill: parent
-            color: "transparent"
-            radius: 4
-            border.color: "transparent"
+    onClicked: {
+        console.log("Scale button clicked, opening menu")
+        menu.open()
+    }
 
-            Text {
-                id: scaleButton
-                anchors.centerIn: parent
-                text: root.scalePresets[root.currentScaleIndex].toFixed(2) + "x"
-                color: "#e0e0e0"
-                font.pixelSize: 12
-                font.weight: Font.Medium
+    // Popup menu with scale options
+    Popup {
+        id: menu
+        x: parent.x - width + parent.width
+        y: parent.height + 4
+        width: 140
+        padding: 8
+        modal: false
+        focus: false
+
+        background: Rectangle {
+            color: "#2b2b2b"
+            border.color: "#464646"
+            border.width: 1
+            radius: 8
+        }
+
+        Column {
+            width: parent.width
+            spacing: 4
+
+            Repeater {
+                model: root.scalePresets.length
+
+                Button {
+                    width: parent.width
+                    height: 36
+
+                    text: root.scalePresets[index].toFixed(2) + "x (" +
+                          Math.round(root.scalePresets[index] * 100) + "%)"
+
+                    background: Rectangle {
+                        color: root.currentScaleIndex === index ? "#0d47a1" : "transparent"
+                        radius: 4
+                    }
+
+                    contentItem: Text {
+                        text: parent.text
+                        color: root.currentScaleIndex === index ? "#ffffff" : "#e0e0e0"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        font.pixelSize: 11
+                    }
+
+                    onClicked: {
+                        console.log("Selected scale:", root.scalePresets[index])
+                        applyScale(root.scalePresets[index])
+                        root.currentScaleIndex = index
+                        root.tooltip = root.scalePresets[root.currentScaleIndex].toFixed(2) + "x - Click to adjust scale"
+                        menu.close()
+                    }
+                }
             }
 
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-                onClicked: {
-                    console.log("Scale button clicked")
-                    menu.open()
-                }
-                onEntered: {
-                    parent.border.color = "#464646"
-                }
-                onExited: {
-                    parent.border.color = "transparent"
-                }
+            Rectangle {
+                width: parent.width
+                height: 1
+                color: "#464646"
             }
 
-            // Popup menu
-            Popup {
-                id: menu
-                x: parent.x - width + parent.width
-                y: parent.height + 4
-                width: 140
-                padding: 8
-                modal: false
-                focus: false
+            Button {
+                width: parent.width
+                height: 36
+                text: "Reload Config"
 
                 background: Rectangle {
-                    color: "#2b2b2b"
-                    border.color: "#464646"
-                    border.width: 1
-                    radius: 8
+                    color: "transparent"
+                    radius: 4
                 }
 
-                Column {
-                    width: parent.width
-                    spacing: 4
+                contentItem: Text {
+                    text: parent.text
+                    color: "#e0e0e0"
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 11
+                }
 
-                    Repeater {
-                        model: root.scalePresets.length
-
-                        Button {
-                            width: parent.width
-                            height: 36
-
-                            text: root.scalePresets[index].toFixed(2) + "x (" +
-                                  Math.round(root.scalePresets[index] * 100) + "%)"
-
-                            background: Rectangle {
-                                color: root.currentScaleIndex === index ? "#0d47a1" : "transparent"
-                                radius: 4
-                            }
-
-                            contentItem: Text {
-                                text: parent.text
-                                color: root.currentScaleIndex === index ? "#ffffff" : "#e0e0e0"
-                                horizontalAlignment: Text.AlignHCenter
-                                verticalAlignment: Text.AlignVCenter
-                                font.pixelSize: 11
-                            }
-
-                            onClicked: {
-                                console.log("Selected scale:", root.scalePresets[index])
-                                applyScale(root.scalePresets[index])
-                                root.currentScaleIndex = index
-                                menu.close()
-                            }
-                        }
-                    }
-
-                    Rectangle {
-                        width: parent.width
-                        height: 1
-                        color: "#464646"
-                    }
-
-                    Button {
-                        width: parent.width
-                        height: 36
-                        text: "Reload Config"
-
-                        background: Rectangle {
-                            color: "transparent"
-                            radius: 4
-                        }
-
-                        contentItem: Text {
-                            text: parent.text
-                            color: "#e0e0e0"
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                            font.pixelSize: 11
-                        }
-
-                        onClicked: {
-                            console.log("Reload config clicked")
-                            reloadNiriConfig()
-                            menu.close()
-                        }
-                    }
+                onClicked: {
+                    console.log("Reload config clicked")
+                    reloadNiriConfig()
+                    menu.close()
                 }
             }
         }
@@ -156,6 +132,6 @@ Loader {
     }
 
     Component.onCompleted: {
-        console.log("Niri Scale Toggle BarWidget loaded")
+        console.log("Niri Scale Toggle BarWidget loaded with icon")
     }
 }
