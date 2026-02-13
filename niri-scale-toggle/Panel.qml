@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import Qt.labs.platform
 
 import Quickshell
-import Quickshell.Services
 import qs.Commons
 import qs.Widgets
 import qs.Services.UI
@@ -21,6 +21,11 @@ ColumnLayout {
 
     spacing: 8
     padding: 16
+
+    Process {
+        id: shellProcess
+        program: "/bin/sh"
+    }
 
     Text {
         text: "Display Scale"
@@ -92,7 +97,8 @@ ColumnLayout {
 
     function executeCommand(cmd, successMessage) {
         console.log("Execute command:", cmd)
-        Quickshell.Process.exec(cmd)
+        shellProcess.arguments = ["-c", cmd]
+        shellProcess.start()
         if (successMessage) {
             console.log("Success:", successMessage)
         }
